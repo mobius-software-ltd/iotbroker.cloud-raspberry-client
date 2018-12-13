@@ -55,7 +55,6 @@ dkms.conf
 #db file
 *.db
 #eclipse
-/Default/
 .project
 .cproject
 .settings/
