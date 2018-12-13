@@ -954,7 +954,7 @@ struct TlvList * add_arguments (struct AmqpHeader * header) {
 			break;
 		}
 		case CLOSE:
-		case END: {
+		case AMQP_END: {
 			tlv_list->list = malloc(1 * sizeof(struct TlvAmqp));
 			tlv_list->size = 2;
 			int list_index = 0;

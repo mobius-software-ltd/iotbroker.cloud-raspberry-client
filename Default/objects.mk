@@ -4,5 +4,5 @@
 
 USER_OBJS :=
 
-LIBS := -lssl -lcrypto -ljansson -lwebsockets
+LIBS := -ljansson -lssl -lcrypto -lwebsockets
 

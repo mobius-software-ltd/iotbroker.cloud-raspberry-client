@@ -58,3 +58,4 @@ dkms.conf
 .project
 .cproject
 .settings/
+/Default

@@ -21,21 +21,6 @@ RM := rm
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
-ifneq ($(strip $(CC_DEPS)),)
--include $(CC_DEPS)
-endif
-ifneq ($(strip $(C++_DEPS)),)
--include $(C++_DEPS)
-endif
-ifneq ($(strip $(C_UPPER_DEPS)),)
--include $(C_UPPER_DEPS)
-endif
-ifneq ($(strip $(CXX_DEPS)),)
--include $(CXX_DEPS)
-endif
-ifneq ($(strip $(CPP_DEPS)),)
--include $(CPP_DEPS)
-endif
 ifneq ($(strip $(C_DEPS)),)
 -include $(C_DEPS)
 endif
@@ -46,19 +31,19 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: raspbery_pi_client
+all: iotbroker.cloud-raspberry-client
 
 # Tool invocations
-raspbery_pi_client: $(OBJS) $(USER_OBJS)
+iotbroker.cloud-raspberry-client: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
-	@echo 'Invoking: GCC C++ Linker'
-	g++ -L/usr/local/lib -pthread -o "raspbery_pi_client" $(OBJS) $(USER_OBJS) $(LIBS)
+	@echo 'Invoking: GCC C Linker'
+	gcc -L/usr/local/lib -pthread -o "iotbroker.cloud-raspberry-client" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(CC_DEPS)$(C++_DEPS)$(EXECUTABLES)$(C_UPPER_DEPS)$(CXX_DEPS)$(OBJS)$(CPP_DEPS)$(C_DEPS) raspbery_pi_client
+	-$(RM) $(EXECUTABLES)$(OBJS)$(C_DEPS) iotbroker.cloud-raspberry-client
 	-@echo ' '
 
 .PHONY: all clean dependents

@@ -936,7 +936,7 @@ void init_header(struct AmqpHeader * header, struct TlvAmqp * list) {
 			header->packet = detach;
 			break;
 		}
-		case END : {
+		case AMQP_END : {
 			struct AmqpEnd * response = malloc(sizeof(struct AmqpEnd));
 			header->packet = response;
 			break;

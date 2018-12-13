@@ -214,7 +214,7 @@ void send_amqp_begin() {
 void send_amqp_end () {
 
 	struct AmqpHeader * header = malloc (sizeof (struct AmqpHeader));
-	header->code = END;
+	header->code = AMQP_END;
 	header->packet = NULL;
 	header->channel = channel;
 	header->doff = 2;
@@ -645,7 +645,7 @@ void process_amqp_rx(char * data, int readable_bytes) {
 			free(detach);
 			break;
 		}
-		case END: {
+		case AMQP_END: {
 			send_amqp_close();
 			break;
 		}

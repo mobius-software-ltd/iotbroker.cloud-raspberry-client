@@ -30,7 +30,7 @@ enum HeaderCode {
 	TRANSFER = 0x14,
 	DISPOSITION = 0x15,
 	DETACH = 0x16,
-	END = 0x17,
+	AMQP_END = 0x17,
 	CLOSE = 0x18,
 	MECHANISMS = 0x40,
 	INIT = 0x41,
