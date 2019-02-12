@@ -184,7 +184,7 @@ int open_lws_net_connection(const char * host, int port, struct TcpListener * cl
 	info.protocols = protocols;
 	if(is_secure) {
 		info.options = LWS_SERVER_OPTION_DO_SSL_GLOBAL_INIT;
-		if(cert != NULL) {
+		if(cert != NULL && access( cert, F_OK ) != -1) {
 			//we can add here protocol name MQTT,COAP, etc.
 			info.alpn = "";
 			info.client_ssl_private_key_filepath = cert;
@@ -192,7 +192,7 @@ int open_lws_net_connection(const char * host, int port, struct TcpListener * cl
 			info.client_ssl_private_key_password = cert_password;
 		}
 		else
-			printf("Certificate is NULL\n");
+			printf("Certificate not present, client will use SSL connection without certificate \n");
 	}
 
 	context = lws_create_context(&info);

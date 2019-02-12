@@ -53,6 +53,7 @@ static void connection_success(void);
 static int open_tcp_connection(void);
 static void load_config(void);
 static void connection_unsuccessful(int cause);
+static char * get_str_from_value(char * value);
 
 void * send_message_task(void *threadid)
 {
@@ -76,7 +77,7 @@ void * send_message_task(void *threadid)
 		json_t *root = json_object();
 		json_object_set_new( root, "time", json_integer( time_in_mill ) );
 		json_object_set_new( root, "temperature", json_real( temperature ) );
-		mqtt_listener->send_message(json_dumps(root, JSON_COMPACT), topic_name, 0, 0, 0);
+		mqtt_listener->send_message(json_dumps(root, JSON_COMPACT), topic_name, message_qos, message_retain, message_dup);
 		sleep(period_message_resend);
 	}
 	return 0;
@@ -203,36 +204,28 @@ static void load_config() {
 			else if (strcasecmp(key, "username") == 0 && value[0] != 10)
 			{
 				account->username = malloc(strlen(value)*sizeof(char));
-				char * tmp_str = malloc(strlen(value)*sizeof(char));
-				memcpy(tmp_str,value,(strlen(value)-1));
-				tmp_str[strlen(value)] = '\0';
+				char * tmp_str = get_str_from_value(value);
 				memcpy((char*)account->username,tmp_str,strlen(value));
 				free(tmp_str);
 			}
 			else if (strcasecmp(key, "password") == 0 && value[0] != 10)
 			{
 				account->password = malloc(strlen(value)*sizeof(char));
-				char * tmp_str = malloc(strlen(value)*sizeof(char));
-				memcpy(tmp_str,value,(strlen(value)-1));
-				tmp_str[strlen(value)] = '\0';
+				char * tmp_str = get_str_from_value(value);
 				memcpy((char*)account->password,tmp_str,strlen(value));
 				free(tmp_str);
 			}
 			else if (strcasecmp(key, "clientId") == 0)
 			{
 				account->client_id = malloc(strlen(value)*sizeof(char));
-				char * tmp_str = malloc(strlen(value)*sizeof(char));
-				memcpy(tmp_str,value,(strlen(value)-1));
-				tmp_str[strlen(value)] = '\0';
+				char * tmp_str = get_str_from_value(value);
 				memcpy((char*)account->client_id,tmp_str,strlen(value));
 				free(tmp_str);
 			}
 			else if (strcasecmp(key, "host") == 0)
 			{
 				account->server_host = malloc(strlen(value)*sizeof(char));
-				char * tmp_str = malloc(strlen(value)*sizeof(char));
-				memcpy(tmp_str,value,(strlen(value)-1));
-				tmp_str[strlen(value)] = '\0';
+				char * tmp_str = get_str_from_value(value);
 				memcpy((char*)account->server_host,tmp_str,strlen(value));
 				free(tmp_str);
 			}
@@ -242,10 +235,12 @@ static void load_config() {
 			}
 			else if (strcasecmp(key, "cleanSession") == 0)
 			{
-				if(strcasecmp(value, "true") == 0)
+				char * value_str = get_str_from_value(value);
+				if(strcasecmp(value_str, "true") == 0)
 					account->clean_session = 1;
 				else
 					account->clean_session = 0;
+				free(value_str);
 			}
 			else if (strcasecmp(key, "keepAlive") == 0)
 			{
@@ -254,27 +249,25 @@ static void load_config() {
 			else if (strcasecmp(key, "will") == 0 && value[0] != 10)
 			{
 				account->will = malloc(strlen(value)*sizeof(char));
-				char * tmp_str = malloc(strlen(value)*sizeof(char));
-				memcpy(tmp_str,value,(strlen(value)-1));
-				tmp_str[strlen(value)] = '\0';
+				char * tmp_str = get_str_from_value(value);
 				memcpy((char*)account->will,tmp_str,strlen(value));
 				free(tmp_str);
 			}
 			else if (strcasecmp(key, "willTopic") == 0&& value[0] != 10)
 			{
 				account->will_topic = malloc(strlen(value)*sizeof(char));
-				char * tmp_str = malloc(strlen(value)*sizeof(char));
-				memcpy(tmp_str,value,(strlen(value)-1));
-				tmp_str[strlen(value)] = '\0';
+				char * tmp_str = get_str_from_value(value);
 				memcpy((char*)account->will_topic,tmp_str,strlen(value));
 				free(tmp_str);
 			}
 			else if (strcasecmp(key, "retain") == 0)
 			{
-				if(strcasecmp(value, "true") == 0)
+				char * value_str = get_str_from_value(value);
+				if(strcasecmp(value_str, "true") == 0)
 					account->is_retain = 1;
 				else
 					account->is_retain = 0;
+				free(value_str);
 			}
 			else if (strcasecmp(key, "qos") == 0)
 			{
@@ -282,17 +275,17 @@ static void load_config() {
 			}
 			else if (strcasecmp(key, "isSecure") == 0)
 			{
-				if(strcasecmp(value, "true") == 0)
+				char * value_str = get_str_from_value(value);
+				if(strcasecmp(value_str, "true") == 0)
 					account->is_secure = 1;
 				else
 					account->is_secure = 0;
+				free(value_str);
 			}
 			else if (strcasecmp(key, "certKeyPath") == 0 && value[0] != 10)
 			{
 				account->certificate = malloc(strlen(value)*sizeof(char));
-				char * tmp_str = malloc(strlen(value)*sizeof(char));
-				memcpy(tmp_str,value,(strlen(value)-1));
-				tmp_str[strlen(value)] = '\0';
+				char * tmp_str = get_str_from_value(value);
 				memcpy((char*)account->certificate,tmp_str,strlen(value));
 				free(tmp_str);
 
@@ -300,18 +293,14 @@ static void load_config() {
 			else if (strcasecmp(key, "certPassword") == 0 && value[0] != 10)
 			{
 				account->certificate_password = malloc(strlen(value)*sizeof(char));
-				char * tmp_str = malloc(strlen(value)*sizeof(char));
-				memcpy(tmp_str,value,(strlen(value)-1));
-				tmp_str[strlen(value)] = '\0';
+				char * tmp_str  = get_str_from_value(value);
 				memcpy((char*)account->certificate_password,tmp_str,strlen(value));
 				free(tmp_str);
 			}
 			else if (strcasecmp(key, "topicName") == 0)
 			{
 				topic_name = malloc(strlen(value)*sizeof(char));
-				char * tmp_str = malloc(strlen(value)*sizeof(char));
-				memcpy(tmp_str,value,(strlen(value)-1));
-				tmp_str[strlen(value)] = '\0';
+				char * tmp_str = get_str_from_value(value);
 				memcpy((char*)topic_name,tmp_str,strlen(value));
 				free(tmp_str);
 			}
@@ -325,17 +314,21 @@ static void load_config() {
 			}
 			else if (strcasecmp(key, "messageRetain") == 0)
 			{
-				if(strcasecmp(value, "true") == 0)
+				char * value_str = get_str_from_value(value);
+				if(strcasecmp(value_str, "true") == 0)
 					message_retain = 1;
 				else
 					message_retain = 0;
+				free(value_str);
 			}
 			else if (strcasecmp(key, "messageDup") == 0)
 			{
-				if(strcasecmp(value, "true") == 0)
+				char * value_str = get_str_from_value(value);
+				if(strcasecmp(value_str, "true") == 0)
 					message_dup = 1;
 				else
 					message_dup = 0;
+				free(value_str);
 			}
 			else
 			{
@@ -348,6 +341,14 @@ static void load_config() {
 		printf("Cannot find file and start application. Application terminated\n");
 		exit(1);
 	}
+}
+
+static char * get_str_from_value(char * value) {
+	char * tmp_str = malloc(strlen(value)*sizeof(char));
+	memcpy(tmp_str,value,(strlen(value)-1));
+	tmp_str[strlen(value)] = '\0';
+	return tmp_str;
+
 }
 
 static void connection_success() {
