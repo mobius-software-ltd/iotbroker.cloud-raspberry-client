@@ -65,7 +65,7 @@ static void * net_service_task(void *thread_id)
 	vhd = NULL;
 	context = NULL;
 	interrupted = 0;
-	return 0;
+	exit(0);
 }
 
 static int connect_ws_client(struct per_vhost_data__minimal *vhd)
@@ -165,6 +165,7 @@ static const struct lws_protocols protocols[] = {
 static void sigint_handler(int sig)
 {
 	interrupted = 1;
+	exit(0);
 }
 
 int open_lws_net_connection(const char * host, int port, struct TcpListener * client,

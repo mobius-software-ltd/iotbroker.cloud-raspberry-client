@@ -197,92 +197,92 @@ static void load_config() {
 			value = strstr((char *)_value, DELIM);
 			value = value + strlen(DELIM);
 			//printf("%s = %s\n", key, value);
-			if (strcasecmp(key, "protocol") == 0)
+			if (strncasecmp(key, "protocol",8) == 0)
 			{
 				account->protocol = atoi(value);
 			}
-			else if (strcasecmp(key, "username") == 0 && value[0] != 10)
+			else if (strncasecmp(key, "username",8) == 0 && value[0] != 10)
 			{
 				account->username = malloc(strlen(value)*sizeof(char));
 				char * tmp_str = get_str_from_value(value);
 				memcpy((char*)account->username,tmp_str,strlen(value));
 				free(tmp_str);
 			}
-			else if (strcasecmp(key, "password") == 0 && value[0] != 10)
+			else if (strncasecmp(key, "password",8) == 0 && value[0] != 10)
 			{
 				account->password = malloc(strlen(value)*sizeof(char));
 				char * tmp_str = get_str_from_value(value);
 				memcpy((char*)account->password,tmp_str,strlen(value));
 				free(tmp_str);
 			}
-			else if (strcasecmp(key, "clientId") == 0)
+			else if (strncasecmp(key, "clientId",8) == 0)
 			{
 				account->client_id = malloc(strlen(value)*sizeof(char));
 				char * tmp_str = get_str_from_value(value);
 				memcpy((char*)account->client_id,tmp_str,strlen(value));
 				free(tmp_str);
 			}
-			else if (strcasecmp(key, "host") == 0)
+			else if (strncasecmp(key, "host",4) == 0)
 			{
 				account->server_host = malloc(strlen(value)*sizeof(char));
 				char * tmp_str = get_str_from_value(value);
 				memcpy((char*)account->server_host,tmp_str,strlen(value));
 				free(tmp_str);
 			}
-			else if (strcasecmp(key, "port") == 0)
+			else if (strncasecmp(key, "port",4) == 0)
 			{
 				account->server_port = atoi(value);
 			}
-			else if (strcasecmp(key, "cleanSession") == 0)
+			else if (strncasecmp(key, "cleanSession",12) == 0)
 			{
 				char * value_str = get_str_from_value(value);
-				if(strcasecmp(value_str, "true") == 0)
+				if(strncasecmp(value_str, "true",4) == 0)
 					account->clean_session = 1;
 				else
 					account->clean_session = 0;
 				free(value_str);
 			}
-			else if (strcasecmp(key, "keepAlive") == 0)
+			else if (strncasecmp(key, "keepAlive",9) == 0)
 			{
 				account->keep_alive = atoi(value);
 			}
-			else if (strcasecmp(key, "will") == 0 && value[0] != 10)
+			else if (strncasecmp(key, "will",4) == 0 && value[0] != 10)
 			{
 				account->will = malloc(strlen(value)*sizeof(char));
 				char * tmp_str = get_str_from_value(value);
 				memcpy((char*)account->will,tmp_str,strlen(value));
 				free(tmp_str);
 			}
-			else if (strcasecmp(key, "willTopic") == 0&& value[0] != 10)
+			else if (strncasecmp(key, "willTopic",9) == 0&& value[0] != 10)
 			{
 				account->will_topic = malloc(strlen(value)*sizeof(char));
 				char * tmp_str = get_str_from_value(value);
 				memcpy((char*)account->will_topic,tmp_str,strlen(value));
 				free(tmp_str);
 			}
-			else if (strcasecmp(key, "retain") == 0)
+			else if (strncasecmp(key, "retain",6) == 0)
 			{
 				char * value_str = get_str_from_value(value);
-				if(strcasecmp(value_str, "true") == 0)
+				if(strncasecmp(value_str, "true",4) == 0)
 					account->is_retain = 1;
 				else
 					account->is_retain = 0;
 				free(value_str);
 			}
-			else if (strcasecmp(key, "qos") == 0)
+			else if (strncasecmp(key, "qos",3) == 0)
 			{
 				account->qos = atoi(value);
 			}
-			else if (strcasecmp(key, "isSecure") == 0)
+			else if (strncasecmp(key, "isSecure",8) == 0)
 			{
 				char * value_str = get_str_from_value(value);
-				if(strcasecmp(value_str, "true") == 0)
+				if(strncasecmp(value_str, "true",4) == 0)
 					account->is_secure = 1;
 				else
 					account->is_secure = 0;
 				free(value_str);
 			}
-			else if (strcasecmp(key, "certKeyPath") == 0 && value[0] != 10)
+			else if (strncasecmp(key, "certKeyPath",11) == 0 && value[0] != 10)
 			{
 				account->certificate = malloc(strlen(value)*sizeof(char));
 				char * tmp_str = get_str_from_value(value);
@@ -290,41 +290,41 @@ static void load_config() {
 				free(tmp_str);
 
 			}
-			else if (strcasecmp(key, "certPassword") == 0 && value[0] != 10)
+			else if (strncasecmp(key, "certPassword",12) == 0 && value[0] != 10)
 			{
 				account->certificate_password = malloc(strlen(value)*sizeof(char));
 				char * tmp_str  = get_str_from_value(value);
 				memcpy((char*)account->certificate_password,tmp_str,strlen(value));
 				free(tmp_str);
 			}
-			else if (strcasecmp(key, "topicName") == 0)
+			else if (strncasecmp(key, "topicName",9) == 0)
 			{
 				topic_name = malloc(strlen(value)*sizeof(char));
 				char * tmp_str = get_str_from_value(value);
 				memcpy((char*)topic_name,tmp_str,strlen(value));
 				free(tmp_str);
 			}
-			else if (strcasecmp(key, "period") == 0)
+			else if (strncasecmp(key, "period",6) == 0)
 			{
 			  period_message_resend = atoi(value);
 			}
-			else if (strcasecmp(key, "messageQos") == 0)
+			else if (strncasecmp(key, "messageQos",10) == 0)
 			{
 				message_qos = atoi(value);
 			}
-			else if (strcasecmp(key, "messageRetain") == 0)
+			else if (strncasecmp(key, "messageRetain",13) == 0)
 			{
 				char * value_str = get_str_from_value(value);
-				if(strcasecmp(value_str, "true") == 0)
+				if(strncasecmp(value_str, "true",4) == 0)
 					message_retain = 1;
 				else
 					message_retain = 0;
 				free(value_str);
 			}
-			else if (strcasecmp(key, "messageDup") == 0)
+			else if (strncasecmp(key, "messageDup",10) == 0)
 			{
 				char * value_str = get_str_from_value(value);
-				if(strcasecmp(value_str, "true") == 0)
+				if(strncasecmp(value_str, "true",4) == 0)
 					message_dup = 1;
 				else
 					message_dup = 0;
