@@ -58,9 +58,10 @@ static char * get_str_from_value(char * value);
 void * send_message_task(void *threadid)
 {
 	while (1) {
-		struct timeval  tv;
-		gettimeofday(&tv, NULL);
-		long time_in_mill = (tv.tv_sec) * 1000 + (tv.tv_usec) / 1000 ;
+		struct timeval  cur_time;
+		gettimeofday(&cur_time, NULL);
+		char time_string[128];
+		strftime(time_string, 80, "%Y-%m-%d %H:%M:%S", localtime(&cur_time.tv_sec));
 		//get temperature
 		char temp_line[7];
 		FILE *file = fopen (FILENAMETEMP, "r");
@@ -75,7 +76,7 @@ void * send_message_task(void *threadid)
 			fclose(file);
 		}
 		json_t *root = json_object();
-		json_object_set_new( root, "time", json_integer( time_in_mill ) );
+		json_object_set_new( root, "time", json_string( time_string ) );
 		json_object_set_new( root, "temperature", json_real( temperature ) );
 		mqtt_listener->send_message(json_dumps(root, JSON_COMPACT), topic_name, message_qos, message_retain, message_dup);
 		sleep(period_message_resend);
