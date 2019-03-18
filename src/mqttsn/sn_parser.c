@@ -775,9 +775,8 @@ char * sn_encode(struct SnMessage * message, int length) {
 	     default:
 	    	 break;
 	 }
-	 printf("message->message_type %i\n",message->message_type);
-	 if (message->message_type != SN_ENCAPSULATED && length != i) {
 
+	 if (message->message_type != SN_ENCAPSULATED && length != i) {
 		 printf("invalid message encoding: expected length-%i, actual-%i \n",length, i);
 	 }
 	 return buf;
