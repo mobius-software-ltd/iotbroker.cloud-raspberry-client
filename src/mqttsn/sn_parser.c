@@ -654,27 +654,27 @@ char * sn_encode(struct SnMessage * message, int length) {
 	    	 struct SnPuback spa = *(struct SnPuback*) message->packet;
 	    	 i += add_short(&buf[i], spa.topic_id);
 	    	 i += add_short(&buf[i], spa.message_id);
-	    	 buf[i] = spa.code;
+	    	 buf[i++] = spa.code;
              break;
 	     }
 	     case SN_PUBREC: {
 	    	 struct SnPubrec spc = *(struct SnPubrec*) message->packet;
-	    	 add_short(&buf[i], spc.message_id);
+	    	 i += add_short(&buf[i], spc.message_id);
 	    	 break;
 	     }
 	     case SN_PUBREL: {
 	    	 struct SnPubrel spr = *(struct SnPubrel*) message->packet;
-	    	 add_short(&buf[i], spr.message_id);
+	    	 i += add_short(&buf[i], spr.message_id);
 	    	 break;
 	     }
 	     case SN_PUBCOMP: {
 	    	 struct SnPubcomp spcp = *(struct SnPubcomp*) message->packet;
-	    	 add_short(&buf[i], spcp.message_id);
+	    	 i += add_short(&buf[i], spcp.message_id);
 	    	 break;
 	     }
 	     case SN_UNSUBACK: {
 	    	 struct SnUnsuback susa = *(struct SnUnsuback*) message->packet;
-	    	 add_short(&buf[i], susa.message_id);
+	    	 i += add_short(&buf[i], susa.message_id);
 	    	 break;
 	     }
          case SN_SUBSCRIBE: {
@@ -697,7 +697,7 @@ char * sn_encode(struct SnMessage * message, int length) {
 	    	 buf[i++] = encode_flags(0, &(ssa.allowedQos), 0, 0, 0, NULL);
 	    	 i += add_short(&buf[i], ssa.topic_id);
 	    	 i += add_short(&buf[i], ssa.message_id);
-	    	 buf[i] = ssa.code;
+	    	 buf[i++] = ssa.code;
 	    	 break;
 	     }
 	     case SN_UNSUBSCRIBE: {
@@ -775,8 +775,9 @@ char * sn_encode(struct SnMessage * message, int length) {
 	     default:
 	    	 break;
 	 }
-
+	 printf("message->message_type %i\n",message->message_type);
 	 if (message->message_type != SN_ENCAPSULATED && length != i) {
+
 		 printf("invalid message encoding: expected length-%i, actual-%i \n",length, i);
 	 }
 	 return buf;
