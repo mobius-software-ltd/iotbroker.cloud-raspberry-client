@@ -74,9 +74,9 @@ int init_coap_client(struct Account * acc, struct MqttListener * listener) {
 	tcp_listener->prd_pt = process_coap_rx;
 	int is_successful = 0;
 	if(!acc->is_secure)
-		init_net_service(host, port, UDP_PROTOCOL, tcp_listener);
+		is_successful = init_net_service(host, port, UDP_PROTOCOL, tcp_listener);
 	else
-		init_dtls(host, port, tcp_listener, acc->certificate, acc->certificate_password);
+		is_successful = init_dtls(host, port, tcp_listener, acc->certificate, acc->certificate_password);
 
 	if (is_successful >= 0) {
 		printf("COAP client successfully connected \n");

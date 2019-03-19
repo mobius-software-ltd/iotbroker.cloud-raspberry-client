@@ -188,6 +188,7 @@ int open_lws_net_connection(const char * host, int port, struct TcpListener * cl
 		if(cert != NULL && access( cert, F_OK ) != -1) {
 			//we can add here protocol name MQTT,COAP, etc.
 			info.alpn = "";
+			info.ssl_private_key_password = cert_password;
 			info.client_ssl_private_key_filepath = cert;
 			info.client_ssl_cert_filepath = cert;
 			info.client_ssl_private_key_password = cert_password;
