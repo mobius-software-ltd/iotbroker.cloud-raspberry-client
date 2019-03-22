@@ -19,6 +19,7 @@
 */
 
 #include <pthread.h>
+#include <limits.h>
 #include <sys/time.h>
 #include <time.h>
 #include <unistd.h>
@@ -338,6 +339,21 @@ static void load_config() {
 			}
 		}
 		fclose(file);
+		//validation
+
+		if(account->keep_alive < 0 || account->keep_alive > USHRT_MAX) {
+			printf("keepalive must be >= 0 and < 65535\n");
+			exit(1);
+		}
+		if((account->will == NULL && account->will_topic != NULL) || (account->will != NULL && account->will_topic == NULL)) {
+			printf("Will and will topic both MUST be present or absent\n");
+			exit(1);
+		}
+		if(account->server_port < 1 || account->server_port > USHRT_MAX) {
+			printf("Port must be > 0 and < 65535\n");
+			exit(1);
+		}
+
 	} else {
 		printf("Cannot find file and start application. Application terminated\n");
 		exit(1);
