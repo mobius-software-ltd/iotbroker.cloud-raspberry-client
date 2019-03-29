@@ -51,7 +51,7 @@ int period_message_resend = 60;
 static pthread_t worker_thread;
 
 static void connection_success(void);
-static int open_tcp_connection(void);
+static int open_connection(void);
 static void load_config(void);
 static void connection_unsuccessful(int cause);
 static char * get_str_from_value(char * value);
@@ -93,7 +93,7 @@ int main (int argc, char **argv)
 	mqtt_listener->cs_pt = connection_success;
 	mqtt_listener->cu_pt = connection_unsuccessful;
 	LOOP:
-	if(open_tcp_connection()) {
+	if(open_connection()) {
 		mqtt_listener->send_connect(account);
 	} else {
 		sleep(5);
@@ -107,7 +107,7 @@ int main (int argc, char **argv)
   return 0;
 }
 
-static int open_tcp_connection() {
+static int open_connection() {
 
 	int is_succesful = 0;
 	switch (account->protocol) {
@@ -250,17 +250,18 @@ static void load_config() {
 			}
 			else if (strncasecmp(key, "will",4) == 0 && value[0] != 10)
 			{
-				account->will = malloc(strlen(value)*sizeof(char));
-				char * tmp_str = get_str_from_value(value);
-				memcpy((char*)account->will,tmp_str,strlen(value));
-				free(tmp_str);
-			}
-			else if (strncasecmp(key, "willTopic",9) == 0&& value[0] != 10)
-			{
-				account->will_topic = malloc(strlen(value)*sizeof(char));
-				char * tmp_str = get_str_from_value(value);
-				memcpy((char*)account->will_topic,tmp_str,strlen(value));
-				free(tmp_str);
+				if (strncasecmp(key, "willTopic",9) == 0&& value[0] != 10)
+				{
+					account->will_topic = malloc(strlen(value)*sizeof(char));
+					char * tmp_str = get_str_from_value(value);
+					memcpy((char*)account->will_topic,tmp_str,strlen(value));
+					free(tmp_str);
+				} else {
+					account->will = malloc(strlen(value)*sizeof(char));
+					char * tmp_str = get_str_from_value(value);
+					memcpy((char*)account->will,tmp_str,strlen(value));
+					free(tmp_str);
+				}
 			}
 			else if (strncasecmp(key, "retain",6) == 0)
 			{
@@ -341,6 +342,10 @@ static void load_config() {
 		fclose(file);
 		//validation
 
+		if(account->client_id == NULL || strlen(account->client_id) == 0) {
+			printf("Client id not set\n");
+			exit(1);
+		}
 		if(account->keep_alive < 0 || account->keep_alive > USHRT_MAX) {
 			printf("keepalive must be >= 0 and < 65535\n");
 			exit(1);
@@ -351,6 +356,10 @@ static void load_config() {
 		}
 		if(account->server_port < 1 || account->server_port > USHRT_MAX) {
 			printf("Port must be > 0 and < 65535\n");
+			exit(1);
+		}
+		if((account->protocol == MQTT_SN || account->protocol == COAP) && strlen(account->will) > 1399) {
+			printf("Content of will cannot be > 1399 for UDP protocols\n");
 			exit(1);
 		}
 
@@ -368,8 +377,9 @@ static char * get_str_from_value(char * value) {
 
 }
 
-static void connection_success() {
+void connection_success() {
 
+	printf("IoT connection established. Client will start data transmission...\n");
 	long t = 1000;
 	int rc = pthread_create(&worker_thread, NULL, send_message_task, (void *)t);
 	if (rc) {
