@@ -1,5 +1,5 @@
 #protocol MQTT(0), MQTTSN(1), COAP(2), AMQP(3), WS(4)
-protocol:0
+protocol:2
 
 #username
 username:user@example.com
@@ -10,16 +10,16 @@ clientId:user99
 #host
 host:broker.iotbroker.cloud
 #port
-port:1883
+port:5683
 
 #cleanSession
 cleanSession:True
 #keepAlive
 keepAlive:100
 #will
-will:
+will:cc
 #willTopic
-willTopic:
+willTopic:cc
 #retain
 retain:False
 #QoS of will message
@@ -32,7 +32,7 @@ certKeyPath:./cert.pem
 certPassword:
 
 #topic name
-topicName:/temperature/
+topicName:/$temperature/
 #qos of message
 messageQos:0
 #uses only in MQTT/MQTT-SN/WS
@@ -41,7 +41,7 @@ messageRetain:False
 messageDup:False
 
 #period of message sending (in sec)
-period:60
+period:10
 
 #END
 
